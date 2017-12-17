@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Name</th>
+      <th>Gender</th>
+      <th>Age</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @team.members.each do |member| %>
+      <tr>
+        <td><%= member.code %></td>
+        <td><%= member.name %></td>
+        <td><%= member.gender %></td>
+        <td><%= member.age %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
