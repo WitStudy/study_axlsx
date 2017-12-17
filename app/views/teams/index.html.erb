@@ -25,3 +25,7 @@
 <br>
 
 <%= link_to 'New Team', new_team_path %>
+
+<br />
+
+<%= link_to 'Download Excel', download_members_teams_path(format: :xlsx), data: { turbolinks: false } %>

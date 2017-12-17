@@ -61,6 +61,15 @@ class TeamsController < ApplicationController
     end
   end
 
+  def download_members
+    @teams = Team.all
+    respond_to do |format|
+      format.xlsx do
+        response.headers['Content-Disposition'] = 'attachment; filename="members.xlsx"'
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_team

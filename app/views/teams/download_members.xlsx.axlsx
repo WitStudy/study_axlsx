@@ -1,0 +1,9 @@
+wb = xlsx_package.workbook
+@teams.each do |team|
+  wb.add_worksheet(name: team.name) do |sheet|
+    sheet.add_row %w[Code Name Gender Age]
+    team.members.each do |member|
+      sheet.add_row [member.code, member.name, member.gender, member.age]
+    end
+  end
+end
