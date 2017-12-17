@@ -11,3 +11,16 @@ Team.delete_all
 ('A'..'C').each do |alpha|
   Team.create(name: "#{alpha}チーム")
 end
+
+# Member
+Member.delete_all
+MEMBER_SIZE = Team.count * 10
+(1..MEMBER_SIZE).each do |m|
+  Member.create(
+    code: "M#{format('%04d', m)}",
+    name: "メンバー#{m}",
+    gender: m % 2,
+    age: 20 + rand(40),
+    team_id: m % Team.count
+  )
+end
