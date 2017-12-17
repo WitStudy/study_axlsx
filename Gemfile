@@ -54,3 +54,5 @@ if Gem.win_platform?
   gem 'wdm', '0.1.1'
   gem 'coffee-script-source', '1.8.0'
 end
+
+gem 'axlsx_rails', '0.5.1'
