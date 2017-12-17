@@ -1,9 +1,9 @@
 wb = xlsx_package.workbook
 @teams.each do |team|
   wb.add_worksheet(name: team.name) do |sheet|
-    sheet.add_row %w[Code Name Gender Age]
+    sheet.add_row %w[Code Name Gender Age], style: apply_style(sheet, header_style, border_style)
     team.members.each do |member|
-      sheet.add_row [member.code, member.name, member.gender, member.age]
+      sheet.add_row [member.code, member.name, member.gender, member.age], style: apply_style(sheet, border_style)
     end
 
     sheet.add_row # 空行を出力
