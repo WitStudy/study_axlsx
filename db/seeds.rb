@@ -14,13 +14,14 @@ end
 
 # Member
 Member.delete_all
-MEMBER_SIZE = Team.count * 10
+teams = Team.all
+MEMBER_SIZE = teams.count * 10
 (1..MEMBER_SIZE).each do |m|
   Member.create(
     code: "M#{format('%04d', m)}",
     name: "メンバー#{m}",
     gender: m % 2,
     age: 20 + rand(40),
-    team_id: m % Team.count
+    team_id: teams[m % teams.count].id
   )
 end
