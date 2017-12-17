@@ -5,5 +5,11 @@ wb = xlsx_package.workbook
     team.members.each do |member|
       sheet.add_row [member.code, member.name, member.gender, member.age]
     end
+
+    sheet.add_row # 空行を出力
+
+    sheet.add_row ['Count',   "=COUNTA(A1:A#{team.members.count + 1}) - 1"]
+    sheet.add_row ['Max Age', "=MAX(D1:D#{team.members.count + 1})"]
+    sheet.add_row ['min Age', "=MIN(D1:D#{team.members.count + 1})"]
   end
 end
