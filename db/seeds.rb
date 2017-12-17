@@ -5,3 +5,9 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+# Team
+Team.delete_all
+('A'..'C').each do |alpha|
+  Team.create(name: "#{alpha}チーム")
+end
