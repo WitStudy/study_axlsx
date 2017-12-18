@@ -11,5 +11,16 @@ wb = xlsx_package.workbook
     sheet.add_row ['Count',   "=COUNTA(A1:A#{team.members.count + 1}) - 1"]
     sheet.add_row ['Max Age', "=MAX(D1:D#{team.members.count + 1})"]
     sheet.add_row ['min Age', "=MIN(D1:D#{team.members.count + 1})"]
+    gender_0_row = sheet.add_row ['Gender 0', "=COUNTIF(C2:C#{team.members.count + 1}, 0)"]
+    gender_1_row = sheet.add_row ['Gender 1', "=COUNTIF(C2:C#{team.members.count + 1}, 1)"]
+
+    sheet.add_chart(Axlsx::Pie3DChart, start_at: 'F2', end_at: 'J9') do |chart|
+      chart.add_series(
+        data: sheet["B#{gender_0_row.index + 1}:B#{gender_1_row.index + 1}"],
+        labels: sheet["A#{gender_0_row.index + 1}:A#{gender_1_row.index + 1}"],
+        title: 'Gender Rate',
+        colors: ['00FF00', '0000FF']
+      )
+    end
   end
 end
