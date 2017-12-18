@@ -1,36 +1,51 @@
 wb = xlsx_package.workbook
 @teams.each do |team|
   wb.add_worksheet(name: team.name) do |sheet|
+    # メンバ一覧を出力
     sheet.add_row %w[Code Name Gender Age], style: apply_style(sheet, header_style, border_style)
     team.members.each do |member|
       sheet.add_row [member.code, member.name, member.gender, member.age], style: apply_style(sheet, border_style)
     end
+    members_last_row_index = team.members.size + 1
 
-    sheet.add_row # 空行を出力
+    # 空行を出力
+    sheet.add_row
 
-    sheet.add_row ['Count',   "=COUNTA(A1:A#{team.members.count + 1}) - 1"]
-    sheet.add_row ['Max Age', "=MAX(D1:D#{team.members.count + 1})"]
-    sheet.add_row ['min Age', "=MIN(D1:D#{team.members.count + 1})"]
-    gender_0_row = sheet.add_row ['Gender 0', "=COUNTIF(C2:C#{team.members.count + 1}, 0)"]
-    gender_1_row = sheet.add_row ['Gender 1', "=COUNTIF(C2:C#{team.members.count + 1}, 1)"]
+    # メンバに関する情報(人数・年齢・性別・世代)を出力
+    sheet.add_row ['Count',   "=COUNTA(A1:A#{members_last_row_index}) - 1"]
+    sheet.add_row ['Max Age', "=MAX(D1:D#{members_last_row_index})"]
+    sheet.add_row ['min Age', "=MIN(D1:D#{members_last_row_index})"]
+    gender_0_row = sheet.add_row ['Gender 0', "=COUNTIF(C2:C#{members_last_row_index}, 0)"]
+    gender_1_row = sheet.add_row ['Gender 1', "=COUNTIF(C2:C#{members_last_row_index}, 1)"]
     generation_rows = []
     (20..60).step(10).each do |generation|
-      generation_rows << sheet.add_row(["#{generation}代", "=COUNTIFS(D2:D#{team.members.count + 1}, \">=#{generation}\", D2:D#{team.members.count + 1}, \"<#{generation + 10}\")"])
+      target_cells = "D2:D#{members_last_row_index}"
+      start_of_range = "#{target_cells}, \">=#{generation}\""
+      end_of_range   = "#{target_cells}, \"<#{generation + 10}\""
+      generation_rows << sheet.add_row(["#{generation}代", "=COUNTIFS(#{start_of_range}, #{end_of_range})"])
     end
 
+    # 性別情報を元に3D円グラフを出力
     sheet.add_chart(Axlsx::Pie3DChart, start_at: 'F2', end_at: 'J9') do |chart|
+      start_index = gender_0_row.index + 1
+      end_index   = gender_1_row.index + 1
+
       chart.add_series(
-        data: sheet["B#{gender_0_row.index + 1}:B#{gender_1_row.index + 1}"],
-        labels: sheet["A#{gender_0_row.index + 1}:A#{gender_1_row.index + 1}"],
+        data: sheet["B#{start_index}:B#{end_index}"],
+        labels: sheet["A#{start_index}:A#{end_index}"],
         title: 'Gender Rate',
         colors: ['00FF00', '0000FF']
       )
     end
 
+    # 世代情報を元に3D棒グラフを出力
     sheet.add_chart(Axlsx::Bar3DChart, start_at: 'F10', end_at: 'J20') do |chart|
+      start_index = generation_rows.first.index + 1
+      end_index   = generation_rows.last.index  + 1
+
       chart.add_series(
-        data:   sheet["B#{generation_rows.first.index + 1}:B#{generation_rows.last.index + 1}"],
-        labels: sheet["A#{generation_rows.first.index + 1}:A#{generation_rows.last.index + 1}"],
+        data:   sheet["B#{start_index}:B#{end_index}"],
+        labels: sheet["A#{start_index}:A#{end_index}"],
         title:  'Generation Histogram',
         colors: ['FF0000', '00FF00', '0000FF', 'FFFF00', 'FF00FF']
       )
