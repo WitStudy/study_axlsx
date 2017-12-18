@@ -13,6 +13,10 @@ wb = xlsx_package.workbook
     sheet.add_row ['min Age', "=MIN(D1:D#{team.members.count + 1})"]
     gender_0_row = sheet.add_row ['Gender 0', "=COUNTIF(C2:C#{team.members.count + 1}, 0)"]
     gender_1_row = sheet.add_row ['Gender 1', "=COUNTIF(C2:C#{team.members.count + 1}, 1)"]
+    generation_rows = []
+    (20..60).step(10).each do |generation|
+      generation_rows << sheet.add_row(["#{generation}代", "=COUNTIFS(D2:D#{team.members.count + 1}, \">=#{generation}\", D2:D#{team.members.count + 1}, \"<#{generation + 10}\")"])
+    end
 
     sheet.add_chart(Axlsx::Pie3DChart, start_at: 'F2', end_at: 'J9') do |chart|
       chart.add_series(
@@ -20,6 +24,15 @@ wb = xlsx_package.workbook
         labels: sheet["A#{gender_0_row.index + 1}:A#{gender_1_row.index + 1}"],
         title: 'Gender Rate',
         colors: ['00FF00', '0000FF']
+      )
+    end
+
+    sheet.add_chart(Axlsx::Bar3DChart, start_at: 'F10', end_at: 'J20') do |chart|
+      chart.add_series(
+        data:   sheet["B#{generation_rows.first.index + 1}:B#{generation_rows.last.index + 1}"],
+        labels: sheet["A#{generation_rows.first.index + 1}:A#{generation_rows.last.index + 1}"],
+        title:  'Generation Histogram',
+        colors: ['FF0000', '00FF00', '0000FF', 'FFFF00', 'FF00FF']
       )
     end
   end
