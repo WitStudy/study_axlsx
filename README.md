@@ -20,7 +20,7 @@
 
 1. [axlsxの導入](2.axlsxの導入.md)
 
-1. 単純なExcel出力
+1. [単純なExcel出力](3.単純なExcel出力.md)
 
 1. Excel式を使用した出力
 
